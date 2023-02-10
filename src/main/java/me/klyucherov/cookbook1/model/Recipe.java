@@ -14,6 +14,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Recipe {
+    private List<Ingredients> ingredientsList = new ArrayList<>();
+    private List<String> cookedList = new ArrayList<>();
 
+    private  String title;
+    private  int cookingTime;
+
+
+
+
+    public void setTitle(String title) throws IncorrectArgumentException{
+        if (title != null && title.isEmpty() && title.isBlank()){
+            this.title =  title;
+        }else {
+            throw new IncorrectArgumentException("Внесите название рецепта");
+        }
+    }
 }
 
