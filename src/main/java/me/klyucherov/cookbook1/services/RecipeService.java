@@ -1,32 +1,21 @@
 package me.klyucherov.cookbook1.services;
 
-import me.klyucherov.cookbook1.model.Ingredients;
+import me.klyucherov.cookbook1.model.Ingredient;
 import me.klyucherov.cookbook1.model.Recipe;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 @Service
-public class RecipeService {
-    private Map<Long, Recipe> recipeMap = new HashMap<>();
+public interface RecipeService {
 
-    private Long generatedId = 1L;
+    Recipe newRecipe(Recipe recipe);
 
 
-    public Recipe createRecipe(Recipe recipe) {
-        recipeMap.put(generatedId, recipe);
-        generatedId++;
-        return recipe;
-    }
-    public Recipe getRecipeById(Long recipeId) {
-        return recipeMap.get(recipeId);
-    }
-
-    public Recipe updateRecipe(Long recipeId, Recipe recipe) {
-        recipeMap.put(recipeId, recipe);
-        return recipe;
-    }
+    Optional<Recipe> getById(Long id);
 }
 
 

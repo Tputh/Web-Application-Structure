@@ -1,39 +1,28 @@
 package me.klyucherov.cookbook1.controllers;
-import me.klyucherov.cookbook1.model.Ingredients;
-import me.klyucherov.cookbook1.services.IngredientsService;
+import me.klyucherov.cookbook1.model.Ingredient;
+import me.klyucherov.cookbook1.services.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 
 @RestController
-@RequestMapping("ingredients")
+@RequestMapping("/ingredient")
 public class IngredientsController {
-    private final IngredientsService ingredientsService;
+    private final IngredientService ingredientService;
 
-    public IngredientsController(IngredientsService ingredientsService) {
-        this.ingredientsService = ingredientsService;
-        ingredientsService.createIngredients(new Ingredients("Яйца", 3, "шт"));
+    public IngredientsController(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
     }
 
-    @PostMapping
-    public ResponseEntity<Ingredients> createIngredients(@RequestBody Ingredients ingredients) {
-        Ingredients createIngredients = ingredientsService.createIngredients(ingredients);
-        return ResponseEntity.ok(createIngredients);
+
+    @PatchMapping
+    public ResponseEntity<Ingredient> save(@RequestBody Ingredient ingredient) {
+        return ResponseEntity.ok(ingredientService.newRecipe(ingredient));
     }
 
-    @GetMapping("{ingredientsId}")
-    public ResponseEntity getIngredients(@PathVariable Long ingredientsId) {
-        Ingredients ingredients = ingredientsService.getIngredientsById(ingredientsId);
-        if(ingredients == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(ingredients);
-    }
-
-    @PutMapping("{ingredientsId}")
-    public ResponseEntity updateIngredients(@RequestBody Ingredients ingredients, @PathVariable Long ingredientsId) {
-        Ingredients updateIngredients = ingredientsService.updateIngredients(ingredientsId, ingredients);
-        return ResponseEntity.ok(updateIngredients);
+    @GetMapping("/{id}")
+    private ResponseEntity<Ingredient> getById(@PathVariable Long id) {
+        return ResponseEntity.of(ingredientService.getById(id));
     }
 }
