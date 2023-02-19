@@ -16,6 +16,10 @@ public interface RecipeService {
 
 
     Optional<Recipe> getById(Long id);
+    Recipe update(Long id, Recipe recipe);
+
+    Recipe delete(Long id);
+    Map<Long, Recipe> getAllRecipe();
 }
 
 

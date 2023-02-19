@@ -28,4 +28,22 @@ public class IngredientServiceImpl implements IngredientService{
     public Optional<Ingredient> getById(Long id){
         return Optional.ofNullable(ingredientMap.get(id));
     }
+
+    @Override
+    public Ingredient update(Long id, Ingredient ingredient) {
+        if (!validationService.validate(ingredient)) {
+            throw new ValidationException(ingredient.toString());
+        }
+        return ingredientMap.replace(id, ingredient);
+    }
+
+    @Override
+    public Ingredient delete(Long id) {
+        return ingredientMap.remove(id);
+    }
+
+    @Override
+    public Map<Long, Ingredient> getAllIngredient() {
+        return ingredientMap;
+    }
 }

@@ -1,8 +1,12 @@
 package me.klyucherov.cookbook1.controllers;
+import me.klyucherov.cookbook1.model.Ingredient;
 import me.klyucherov.cookbook1.model.Recipe;
 import me.klyucherov.cookbook1.services.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
 @RestController
 @RequestMapping("/recipe")
 public class RecipeController {
@@ -12,7 +16,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @PatchMapping
+   @PostMapping
     public ResponseEntity<Recipe> save(@RequestBody Recipe recipe) {
       return ResponseEntity.ok(recipeService.newRecipe(recipe));
     }
@@ -20,6 +24,18 @@ public class RecipeController {
     @GetMapping("/{id}")
     private ResponseEntity<Recipe> getById(@PathVariable Long id) {
         return ResponseEntity.of(recipeService.getById(id));
+    }
+    @PutMapping("/{id}")
+    private ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe recipe) {
+        return ResponseEntity.ok(recipeService.update(id, recipe));
+    }
+    @DeleteMapping("/{id}")
+    private ResponseEntity<Recipe> deleteRecipe(@PathVariable Long id) {
+        return ResponseEntity.ok(recipeService.delete(id));
+    }
+    @GetMapping
+    private ResponseEntity<Map<Long, Recipe>> getAll() {
+        return ResponseEntity.ok(recipeService.getAllRecipe());
     }
 
 
