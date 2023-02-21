@@ -2,6 +2,7 @@ package me.klyucherov.cookbook1.services;
 
 import me.klyucherov.cookbook1.model.Ingredient;
 import me.klyucherov.cookbook1.model.Recipe;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,8 +11,8 @@ public class ValidationServiceImpl implements ValidationService {
     public boolean validate(Ingredient ingredient) {
         return ingredient != null
                 && ingredient.getNameIngredient() != null
-                && ingredient.getCount() != 0
-                && ingredient.getMeasureUnit() != null;
+                &&!StringUtils.isEmpty(ingredient.getNameIngredient());
+
     }
 
     @Override
@@ -20,7 +21,8 @@ public class ValidationServiceImpl implements ValidationService {
                 && recipe.getNameRecipe() != null
                 && recipe.getCookingTime() != 0
                 && recipe.getSteps() != null
-                && recipe.getIngredientsList().isEmpty()
-                && recipe.getSteps().isEmpty();
+                && !recipe.getIngredientsList().isEmpty()
+                && !recipe.getSteps().isEmpty()
+                && !StringUtils.isEmpty(recipe.getNameRecipe());
     }
 }

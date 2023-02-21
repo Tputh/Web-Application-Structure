@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class IngredientServiceImpl implements IngredientService{
     private static long generationId = 1;
-    private Map<Long, Ingredient> ingredientMap = new HashMap<>();
+    private final Map<Long, Ingredient> ingredientMap = new HashMap<>();
     private final ValidationService validationService;
 
     public IngredientServiceImpl(ValidationService validationService) {

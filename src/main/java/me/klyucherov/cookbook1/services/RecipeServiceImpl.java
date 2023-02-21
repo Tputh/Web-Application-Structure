@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class RecipeServiceImpl implements RecipeService{
     private static long generationId = 1;
-    private Map<Long, Recipe> recipeMap = new HashMap<>();
+    private final Map<Long, Recipe> recipeMap = new HashMap<>();
     private final ValidationService validationService;
 
     public RecipeServiceImpl(ValidationService validationService) {
