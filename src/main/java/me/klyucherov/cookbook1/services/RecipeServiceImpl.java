@@ -1,28 +1,43 @@
 package me.klyucherov.cookbook1.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.RequiredArgsConstructor;
 import me.klyucherov.cookbook1.model.Recipe;
 import me.klyucherov.cookbook1.model.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService{
     private static long generationId = 1;
-    private final Map<Long, Recipe> recipeMap = new HashMap<>();
+    private Map<Long, Recipe> recipeMap = new HashMap<>();
     private final ValidationService validationService;
+    private final FileService fileService;
+    @Value("${path.to.recipes.file}")
+    private String recipesFilePath;
 
-    public RecipeServiceImpl(ValidationService validationService) {
-        this.validationService = validationService;
-    }
+    @Value("${name.for.recipes.files}")
+    private String recipesFileName;
+    private Path recipesPath;
+
+
 
     @Override
     public Recipe newRecipe(Recipe recipe) {
         if (!validationService.validate(recipe)) {
             throw new ValidationException(recipe.toString());
         }
-        return recipeMap.put(generationId++, recipe);
+        recipeMap.put(generationId++, recipe);
+        fileService.saveMapToFile(recipeMap, recipesPath);
+
+        return recipe;
     }
 
     @Override
@@ -35,16 +50,26 @@ public class RecipeServiceImpl implements RecipeService{
         if (!validationService.validate(recipe)) {
             throw new ValidationException(recipe.toString());
         }
-        return recipeMap.replace(id, recipe);
+        recipeMap.replace(id, recipe);
+        fileService.saveMapToFile(recipeMap, recipesPath);
+
+        return recipe;
     }
 
     @Override
     public Recipe delete(Long id) {
-        return recipeMap.remove(id);
+        Recipe recipe = recipeMap.remove(id);
+        fileService.saveMapToFile(recipeMap, recipesPath);
+        return recipe;
     }
 
     @Override
     public Map<Long, Recipe> getAllRecipe() {
         return recipeMap;
+    }
+    @PostConstruct
+    private void init() {
+        recipesPath = Path.of(recipesFilePath, recipesFileName);
+        recipeMap = fileService.readMapFromFile(recipesPath, new TypeReference<HashMap<Long, Recipe>>() {});
     }
 }

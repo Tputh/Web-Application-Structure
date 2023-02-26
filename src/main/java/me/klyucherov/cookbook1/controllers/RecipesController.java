@@ -11,10 +11,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/recipe")
 @Tag(name = "API по работе с рецептами")
-public class RecipeController {
+public class RecipesController {
     private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipesController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
     @Operation(

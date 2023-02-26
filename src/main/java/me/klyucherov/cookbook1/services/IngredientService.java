@@ -10,8 +10,9 @@ import java.util.Optional;
 
 public interface IngredientService {
 
-    Ingredient newRecipe(Ingredient ingredient);
 
+
+    Ingredient nawIngredient(Ingredient ingredient);
 
     Optional<Ingredient> getById(Long id);
 

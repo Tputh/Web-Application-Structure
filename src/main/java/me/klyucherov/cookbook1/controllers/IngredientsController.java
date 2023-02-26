@@ -24,7 +24,7 @@ public class IngredientsController {
     )
     @PostMapping
     public ResponseEntity<Ingredient> save(@RequestBody Ingredient ingredient) {
-        return ResponseEntity.ok(ingredientService.newRecipe(ingredient));
+        return ResponseEntity.ok(ingredientService.nawIngredient(ingredient));
     }
     @Operation(
             summary = "Получение ингредиента по id"
