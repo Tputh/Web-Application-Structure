@@ -6,8 +6,11 @@ import me.klyucherov.cookbook1.model.Recipe;
 import me.klyucherov.cookbook1.model.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +70,21 @@ public class RecipeServiceImpl implements RecipeService{
     public Map<Long, Recipe> getAllRecipe() {
         return recipeMap;
     }
+
+    @Override
+    public File readFile() {
+        return recipesPath.toFile();
+    }
+
+    @Override
+    public void uploadFile(MultipartFile file) throws IOException {
+        fileService.uploadFile(file, recipesPath);
+        recipeMap = fileService.readMapFromFile(recipesPath, new TypeReference<Map<Long, Recipe>>() {});
+    }
+
     @PostConstruct
     private void init() {
         recipesPath = Path.of(recipesFilePath, recipesFileName);
-        recipeMap = fileService.readMapFromFile(recipesPath, new TypeReference<HashMap<Long, Recipe>>() {});
+        recipeMap = fileService.readMapFromFile(recipesPath, new TypeReference<Map<Long, Recipe>>() {});
     }
 }

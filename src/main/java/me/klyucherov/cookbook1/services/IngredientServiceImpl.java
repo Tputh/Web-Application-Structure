@@ -3,12 +3,16 @@ package me.klyucherov.cookbook1.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import me.klyucherov.cookbook1.model.Ingredient;
+import me.klyucherov.cookbook1.model.Recipe;
 import me.klyucherov.cookbook1.model.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,9 +72,20 @@ public class IngredientServiceImpl implements IngredientService{
         return ingredientMap;
     }
 
+    @Override
+    public File readFile() {
+        return ingredientPath.toFile();
+    }
+
+    @Override
+    public void uploadFile(MultipartFile file) throws IOException {
+        fileService.uploadFile(file, ingredientPath);
+        ingredientMap = fileService.readMapFromFile(ingredientPath, new TypeReference<Map<Long, Ingredient>>() {});
+    }
+
     @PostConstruct
     private void init() {
         ingredientPath = Path.of(ingredientsFilePath, ingredientsFileName);
-        ingredientMap = fileService.readMapFromFile(ingredientPath, new TypeReference<HashMap<Long, Ingredient>>() {});
+        ingredientMap = fileService.readMapFromFile(ingredientPath, new TypeReference<Map<Long, Ingredient>>() {});
     }
 }

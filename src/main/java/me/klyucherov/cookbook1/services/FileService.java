@@ -4,18 +4,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 @Service
 @AllArgsConstructor
 public class FileService {
+
     private ObjectMapper objectMapper;
 
     public <T> void saveMapToFile(Map<Long, T> map, Path path){
@@ -28,7 +33,7 @@ public class FileService {
         }
     }
 
-    public <T> Map<Long, T> readMapFromFile(Path path, TypeReference<HashMap<Long, T>> typeReference) {
+    public <T> Map<Long, T> readMapFromFile(Path path, TypeReference<Map<Long, T>> typeReference) {
         try {
             String json = Files.readString(path);
             if (json.isEmpty()) {
@@ -42,10 +47,26 @@ public class FileService {
         }
     }
 
+    public void uploadFile(MultipartFile file, Path filePath) throws IOException {
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+    }
+
     private void createNewFile(Path path) throws IOException {
         Files.deleteIfExists(path);
         Files.createFile(path);
     }
+
+
 
 
 }
